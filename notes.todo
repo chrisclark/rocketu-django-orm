@@ -1,0 +1,42 @@
+* TODO create and run migration
+python manage.py sql product
+python manage.py makemigrations product
+python manage.py sqlmigrations product
+
+* TODO launch bpython at the shell
+pip install bpython
+pip install django-extensions
+## add django_extensions to settings.py -> INSTALLED_APPS
+python manage.py shell_plus
+
+* TODO create simple queryset
+qs = Product.objects.all()
+[p for p in qs]
+
+* TODO add string repr to model
+def __repr__(self):
+    return "%s ($%s)" % (self.name, self.price/100.0)
+
+* TODO show underlying guts of QS
+from utils import qsf
+c = Category(name="Kitchen")
+c.save()
+p = Product(name="Dish Soap", price=599, category=c)
+qs = Product.objects.filter(price=599)
+type(qs)
+qs.query
+qs.query.where
+qs.query.select
+print str(qs.query)
+print qsf(qs)
+
+qs = Product.objects.filter(category__name="Kitchen").all()
+print str(qs.query)
+print qsf(qs)
+
+from django.db import connection
+qs.query.get_compiler(connection=connection)
+
+* TODO show laziness of qs via watching SQL log files
+cd ~/Library/Application Support/Postgres93/var/pg_log
+tail -f postgresql-2015-01-27_000000.log
